@@ -1,7 +1,9 @@
 
 
-var mongoskin = require('mongoskin');
-var tasks = mongoskin.db('localhost:27017/todo', {w:1}).collection('tasks');
+
+var tasks = require('mongoskin')
+            .db('mongodb://localhost:27017/todo', {w:1})
+            .collection('tasks');
 
 
 exports.list = function(req, res, next)
@@ -21,27 +23,29 @@ exports.list = function(req, res, next)
 
 exports.add = function(req, res, next)
 {
-  if (!req.body || !req.body.name) return next(new Error('No data provided.'));
-  tasks.save(
-    { name: req.body.name, completed: false },
-    function(error, task)
-    {
-        if (error) return next(error);
-        if (!task) return next(new Error('Failed to save.'));
-        console.info('Added %s with id=%s', task.name, task._id);
-        res.redirect('/tasks');
-    })
+
+    if (!req.body || !req.body.name) return next(new Error('No data provided.'));
+
+    tasks.save(
+        { name: req.body.name, completed: false },
+        function(error, task)
+        {
+            if (error) return next(error);
+            if (!task) return next(new Error('Failed to save.'));
+            console.info('Added %s with id=%s', task.name, task._id);
+            res.redirect('/tasks');
+        })
 };
 
 
 
 exports.markAllCompleted = function(req, res, next)
 {
-    if (!req.body.all_done || req.body.all_done !== 'true') return next();
+    if (req.body.alldone !== 'true') return next();
 
     tasks.update(
         { completed: false },
-        { completed: true},
+        { $set: { completed: true }},
         {multi: true},
         function(error, count)
         {
@@ -57,12 +61,12 @@ exports.completed = function(req, res, next)
 {
     tasks.find(
         {completed: true}).toArray(
-            function(error, tasks)
+            function(error, tasksCompleted)
             {
                 res.render('tasks_completed',
                 {
                     title: 'Completed',
-                    tasks: tasks || []
+                    tasks: tasksCompleted || []
                 });
             });
 };
@@ -73,12 +77,10 @@ exports.markCompleted = function(req, res, next)
 {
     if (!req.body.completed) return next(new Error('Param is missing'));
 
-
-
     tasks.updateById(
-        req.param('task_id'),
+        req.body.id,
         {
-            completed: true
+            $set: { completed: true }
         },
         function(error, count)
         {

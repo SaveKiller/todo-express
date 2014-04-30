@@ -8,6 +8,8 @@
     <orderEntry type="library" name="express-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="express-validator-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="todo-express node_modules" level="project" />
+    <orderEntry type="library" name="bootstrap-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="Node.js v0.10.26 Core Modules" level="application" />
   </component>
 </module>
 
