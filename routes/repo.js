@@ -24,10 +24,13 @@ exports.list = function(req, res, next)
 exports.add = function(req, res, next)
 {
 
-    if (!req.body || !req.body.name) return next(new Error('No data provided.'));
+    if (!req.body.newName) return next();
 
     tasks.save(
-        { name: req.body.name, completed: false },
+        {
+            name: req.body.newName,
+            completed: false
+        },
         function(error, task)
         {
             if (error) return next(error);
@@ -56,26 +59,9 @@ exports.markAllCompleted = function(req, res, next)
 };
 
 
-
-exports.completed = function(req, res, next)
-{
-    tasks.find(
-        {completed: true}).toArray(
-            function(error, tasksCompleted)
-            {
-                res.render('tasks_completed',
-                {
-                    title: 'Completed',
-                    tasks: tasksCompleted || []
-                });
-            });
-};
-
-
-
 exports.markCompleted = function(req, res, next)
 {
-    if (!req.body.completed) return next(new Error('Param is missing'));
+    if (req.body.completed!=='true') return next();
 
     tasks.updateById(
         req.body.id,
@@ -92,12 +78,33 @@ exports.markCompleted = function(req, res, next)
 };
 
 
+exports.listCompleted = function(req, res, next)
+{
+    tasks.find(
+        {completed: true}).toArray(
+            function(error, tasksCompleted)
+            {
+                res.render('tasks_completed',
+                {
+                    title: 'Completed',
+                    tasks: tasksCompleted || []
+                });
+            });
+};
+
+
+
+
+
+
 
 exports.del = function(req, res, next)
 {
 
+    if (req.body.del!=='true') return next();
+
     tasks.removeById(
-        req.param('task_id'),
+        req.body.id,
         function(error, count)
         {
             if (error) return next(error);

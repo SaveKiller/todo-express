@@ -26,8 +26,13 @@ $(document).ready(function()
         $.ajax(
         {
             type: 'DELETE',
-            url: '/tasks/' + target.attr('data-task-id'),
-            data: { _csrf: target.attr('data-csrf')},
+            url: '/tasks/',
+            data:
+            {
+                _csrf: target.attr('data-csrf'),
+                id: target.attr('data-task-id'),
+                del: 'true'
+            },
             success: function(response)
             {
                 target.parent().parent().remove();

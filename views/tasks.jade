@@ -15,23 +15,27 @@ block content
 
   .list
     .item
+
       div.action
         form(action='/tasks', method='post')
           input(type='hidden', value='true', name='alldone')
           input(type='hidden', value=locals._csrf, name='_csrf')
           input(type='submit', class='btn btn-success btn-xs', value='all done')
+
       form(action="/tasks", method='post')
         input(type='hidden', value=locals._csrf, name='_csrf')
         div.name
-          input(type="text", name="name", placeholder='Add a new task')
+          input(type="text", name="newName", placeholder='Add a new task')
         div.delete
           input.btn.btn-primary.btn-sm(type="submit", value='add')
+
     if (tasks.length === 0)
       | No tasks.
+
     each task, index in tasks
       .item
         div.action
-          form(action='/tasks/#{task._id}', method='post')
+          form(action='/tasks', method='post')
             input(type='hidden', value=task._id.toString(), name='id')
             input(type='hidden', value='true', name='completed')
             input(type='hidden', value=locals._csrf, name='_csrf')

@@ -13,6 +13,7 @@ var cookieParser    = require('cookie-parser');
 var session         = require('express-session');
 var csurf           = require('csurf');
 var less            = require('less-middleware');
+var favicon         = require('static-favicon');
 
 var app = express();
 
@@ -24,7 +25,7 @@ app.locals.appname = 'Express.js Todo App'
 app.set('port', "3001");
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
 app.use(morgan(
@@ -89,17 +90,19 @@ app.route('/')
         res.render('index', { title: 'Express.js Todo App' });
     });
 
+
 app.route('/tasks')
     .get(repo.list)
-    .post(repo.markAllCompleted)
     .post(repo.add)
-
-app.route('/tasks/:task_id')
+    .post(repo.markAllCompleted)
     .post(repo.markCompleted)
     .delete(repo.del)
 
+
+
+
 app.route('/tasks/completed')
-    .get(repo.completed)
+    .get(repo.listCompleted)
 
 
 
